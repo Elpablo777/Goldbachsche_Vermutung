@@ -84,7 +84,8 @@ Andere Agenten dürfen Einträge nur **anhängen**, nicht stumm überschreiben.
 **Aktion**
 
 - GitHub-Repository angelegt: https://github.com/Elpablo777/Goldbachsche_Vermutung (öffentlich, damit Gegenprüfungs-Agenten ohne Zugangshürde lesen können; Umschalten auf privat jederzeit möglich).
-- Lokales Git initialisiert (`main`), erste Push folgt unmittelbar; Beschreibung und Topics am Repo gesetzt.
+- Lokales Git initialisiert (`main`), Push erfolgreich; Topics gesetzt (goldbach-conjecture, number-theory, prime-numbers, mathematics, verification, reproducible-research, research); Beschreibung am Repo gesetzt.
+- Betriebsnotiz für nachfolgende Agenten: Push mit der privaten Mailadresse `hannover84@msn.com` wird von GitHub abgelehnt (E-Mail-Privatsphäre). Im Repo ist deshalb lokal `user.email = 20980418+Elpablo777@users.noreply.github.com` gesetzt (GitHub-NoReply-Format). Nicht global ändern.
 - `.gitignore`: `__pycache__`, Go-Buildartefakte und große regenerierbare Witness-`.bin`-Dateien werden nicht gepusht (regenerierbar, siehe `06_verifikation/ANLEITUNG.md`).
 
 **Hinweis zur Zielsetzung (Ehrlichkeitsregel bleibt)**
