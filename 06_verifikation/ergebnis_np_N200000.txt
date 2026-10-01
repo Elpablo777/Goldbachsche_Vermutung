@@ -1,0 +1,91 @@
+BINÄRE GOLDBACH-VERIFIKATION METHODE C (NumPy, vektorisiert)
+Intervall: alle geraden n mit 4 <= n <= 200000
+Methode: NumPy-Sieb (Slice-Zuweisung); Witness-Zuweisung als
+         Vektoroperation ueber ungeloeste k=n/2, p aufsteigend;
+         'dead'-k (k<p) sind endgueltige Fehlschlaege (siehe Header).
+Anzahl geprüfter gerader n: 99999
+Anzahl Fehlschläge: 0
+Erster Fehlschlag: None
+Größtes minimales p(n): 383
+Anzahl Primzahlen <= 200000: 17984
+Anzahl Witness-Pässe: 76
+Laufzeit_s: 0.011494
+Python: 3.14.8
+NumPy: 2.4.3
+Plattform: win32
+
+Rekordhalter (p, erstes n mit min-p = p, Anzahl n mit diesem Rekord):
+  p=     3  n_erste=           6  anzahl=17982
+  p=     5  n_erste=          12  anzahl=15822
+  p=     7  n_erste=          30  anzahl=13688
+  p=    11  n_erste=         124  anzahl=10206
+  p=    13  n_erste=         122  anzahl=8322
+  p=    17  n_erste=         418  anzahl=6037
+  p=    19  n_erste=          98  anzahl=5794
+  p=    23  n_erste=         220  anzahl=3935
+  p=    29  n_erste=         346  anzahl=2916
+  p=    31  n_erste=         308  anzahl=3287
+  p=    37  n_erste=        1274  anzahl=2222
+  p=    41  n_erste=        1144  anzahl=1621
+  p=    43  n_erste=         962  anzahl=1446
+  p=    47  n_erste=         556  anzahl=1012
+  p=    53  n_erste=        2512  anzahl=743
+  p=    59  n_erste=        3526  anzahl=537
+  p=    61  n_erste=        1382  anzahl=1025
+  p=    67  n_erste=        1856  anzahl=708
+  p=    71  n_erste=        4618  anzahl=325
+  p=    73  n_erste=         992  anzahl=363
+  p=    79  n_erste=        3818  anzahl=403
+  p=    83  n_erste=        7432  anzahl=235
+  p=    89  n_erste=       12778  anzahl=167
+  p=    97  n_erste=        5978  anzahl=212
+  p=   101  n_erste=       26098  anzahl=109
+  p=   103  n_erste=        2642  anzahl=146
+  p=   107  n_erste=       23266  anzahl=100
+  p=   109  n_erste=       10268  anzahl=151
+  p=   113  n_erste=       19696  anzahl=55
+  p=   127  n_erste=        6008  anzahl=85
+  p=   131  n_erste=       34192  anzahl=40
+  p=   137  n_erste=       22606  anzahl=35
+  p=   139  n_erste=        5372  anzahl=64
+  p=   149  n_erste=       37768  anzahl=21
+  p=   151  n_erste=       13562  anzahl=48
+  p=   157  n_erste=        9596  anzahl=24
+  p=   163  n_erste=       22832  anzahl=24
+  p=   167  n_erste=       59914  anzahl=11
+  p=   173  n_erste=        7426  anzahl=7
+  p=   179  n_erste=       88786  anzahl=5
+  p=   181  n_erste=       50312  anzahl=11
+  p=   191  n_erste=       97768  anzahl=5
+  p=   193  n_erste=       48002  anzahl=6
+  p=   197  n_erste=      112558  anzahl=3
+  p=   199  n_erste=       60062  anzahl=9
+  p=   211  n_erste=       43532  anzahl=7
+  p=   227  n_erste=      103738  anzahl=2
+  p=   229  n_erste=       66158  anzahl=4
+  p=   233  n_erste=       54244  anzahl=3
+  p=   241  n_erste=      134972  anzahl=1
+  p=   251  n_erste=      100768  anzahl=2
+  p=   271  n_erste=      137708  anzahl=2
+  p=   283  n_erste=       84116  anzahl=1
+  p=   293  n_erste=       63274  anzahl=2
+  p=   307  n_erste=      180596  anzahl=2
+  p=   311  n_erste=      194452  anzahl=1
+  p=   313  n_erste=      113672  anzahl=1
+  p=   331  n_erste=      128168  anzahl=1
+  p=   359  n_erste=      194428  anzahl=1
+  p=   383  n_erste=      194470  anzahl=1
+
+Maximales minimales p(n) pro Zehnerpotz-Block [A,B]:
+  [           4,           10]  max_min_p=     3  erstes_n=           6
+  [          11,          100]  max_min_p=    19  erstes_n=          98
+  [         101,         1000]  max_min_p=    73  erstes_n=         992
+  [        1001,        10000]  max_min_p=   173  erstes_n=        7426
+  [       10001,       100000]  max_min_p=   293  erstes_n=       63274
+  [      100001,       200000]  max_min_p=   383  erstes_n=      194470
+
+BEWEISSTATUS DIESES LAUFS:
+  Wenn Fehlschlaege=0: die Aussage gilt fuer alle geraden n in [4,N].
+  Daraus folgt NICHT die Aussage fuer alle geraden n >= 4.
+
+KEINE Gegenbeispiele im Intervall.

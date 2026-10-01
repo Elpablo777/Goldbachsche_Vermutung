@@ -3,7 +3,8 @@ __pycache__/
 *.pyc
 
 # Go-Buildartefakte (regenerierbar via `go build` in 06_verifikation/go/)
-06_verifikation/go/
+06_verifikation/go/goldbach_check
+06_verifikation/go/goldbach_check.exe
 *.exe
 
 # Grosse, regenerierbare Witness-Dateien: lokal behalten, NICHT pushen

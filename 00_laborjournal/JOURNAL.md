@@ -106,3 +106,39 @@ Andere Agenten dürfen Einträge nur **anhängen**, nicht stumm überschreiben.
 **Nächster Schritt**
 
 - Push des Archivs v2; danach Fortsetzung der Rechenläufe und Dokumentation wie oben.
+
+---
+
+## 2026-10-01 — Meilenstein: Verifikation bis 10^8, vier Methoden, Witness-Cross-Check (v3)
+
+**Neue Infrastruktur (alles in `06_verifikation/`)**
+
+- Methode C `goldbach_check_np.py` (NumPy, vektorisiert): Restmengen-Elimination über k=n/2, minimaler Witness durch aufsteigende Primzahl-Pässe; „dead“-k sind nach Beweis im Dateikopf endgültige Fehlschläge (jede Primzahl ≤ k wurde getestet).
+- Methode D `go/goldbach_check.go` (Go 1.27, vollständig unabhängig): ungerades Bitsieb (Bit i ↔ 2i+1), parallele Chunks, Witness-Datei im Format `GBWIT1` (LEB128 + CRC32).
+- Verifier `verify_witnesses.py` (Python/NumPy, unabhängig von D): CRC, Header, JEDES Witness (p prim, n−p prim, p ≤ n/2), plus komplette Minimalitäts-Neuberechnung nach Methode C.
+
+**Läufe (Umgebung: Windows, Python 3.14.8, NumPy 2.4.3, Go 1.27.0, 12 Kerne)**
+
+| Lauf | Ergebnis |
+|---|---|
+| C @ 200000 / 10^6 | reproduziert 383 / 523 (konsistent mit A/B) |
+| C @ 10^7 | 4 999 999 gerade n, 0 Fehlschläge, max min-p = 751, 0,6 s |
+| D @ 10^7 | identisch; Witness-Dateien C vs D **byte-identisch** (5 091 112 Bytes) |
+| D @ 10^8 | 49 999 999 gerade n, 0 Fehlschläge, max min-p = 1093, 0,72 s |
+| V @ 10^8 | alle Checks OK (Existenz + Minimalität, 17,7 s), SHA256 der Witness-Datei notiert |
+
+**Analyse**
+
+- Vier strukturell unabhängige Implementierungen (A: Liste, B: Hash-Set, C: NumPy-Restmengen, D: Go-Bitsieb) agreeieren; die Witness-Datei macht jeden Einzelfall prüfbar, ohne die Datei vertrauen zu müssen (Verifier rechnet sie neu).
+- max min-p: 383 (2·10^5) → 523 (10^6) → 751 (10^7) → 1093 (10^8); wächst deutlich langsamer als n — konsistent mit der (unbewiesenen) Heuristik min-p ≪ n und mit OHP14 (9781 bei 4·10^18).
+- Status unverändert: **endliche Verifikation, kein Beweis** von G_bin.
+
+**Verworfene Alternativen (Warum)**
+
+- C++/Rust statt Go: kein C-Compiler vorhanden; Rust vorhanden, aber Go reicht und ist einfacher auditierbar — keine Notwendigkeit.
+- NumPy @ 10^8 als Primär-Lauf: machbar, aber Go ist 20× schneller und speichersparsamer; NumPy bleibt als unabhängiger Verifier im Einsatz.
+- Spark/Cloud: 0-€-Budget; stattdessen GitHub Actions (public repo, kostenlos) — folgt als nächster Schritt.
+
+**Nächster Schritt**
+
+- Commit+Push; GitHub-Actions-Workflow für N=10^9 (kostenlose Runner); elementare Sätze 5–6; Doku-Update.

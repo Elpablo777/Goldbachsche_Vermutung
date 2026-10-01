@@ -1,0 +1,18 @@
+Goldbach-Komet mit KORRIGIERTER Normierung (Heuristik, KEIN Beweis):
+  G_2(n) = Anzahl ungeordneter Partitionen p+q=n (p<=q, prim)
+  Erwartung (Hardy-Littlewood, geordnete Zaehlung S(n)*n/log^2 n):
+    G_2(n) ~ (1/2) * S(n) * n / (log n)^2   (Faktor 1/2: Unordnung)
+  S(n) = 2*prod_{p>2}(1-1/(p-1)^2)*prod_{p|n,p>2}(p-1)/(p-2),
+  unendliches Produkt abgeschnitten bei p<=10^5.
+
+           n      G2(n)   1/2*S*n/log^2n  Verhaeltnis
+        1000         28            18.45     1.517897
+       10000        127           103.76     1.223955
+      100000        810           664.08     1.219739
+     1000000       5402          4611.64     1.171383
+    10000000      38807         33881.45     1.145376
+       30030        905           723.42     1.251007
+      510510       9493          8071.97     1.176044
+     8388608      24928         21788.84     1.144072
+
+Interpretation: Verhaeltnis nahe 1 staerkt die Heuristik, beweist sie nicht.
