@@ -65,3 +65,17 @@ Klingt nach Dirichlet, liefert aber keine gleichmäßige untere Schranke für \(
 2. Endliche Checks reproduzierbar machen.  
 3. Die Minor-Arc-Lücke als präzisen Blocker festhalten.  
 4. Keinen neuen analytischen Durchbruch vortäuschen.
+
+## Ergänzt 2026-10-01: Verifikationsarchitektur (Methoden C/D, CI, Verifier)
+
+- **Methode C (NumPy, vektorisiert) — W:** Restmengen-Elimination über \(k=n/2\); minimales \(p\) durch aufsteigende Primzahl-Pässe. „Dead"-\(k\) sind nach explizitem Argument endgültige Fehlschläge. 10^7 in 0,6 s.
+- **Methode D (Go, ungerades Bitsieb, parallel) — W:** vollständig unabhängige Sprache/Implementierung; schreibt Witness-Dateien (GBWIT1: LEB128 + CRC32). 10^8 lokal in 0,72 s; **10^9 auf GitHub Actions** in 13,2 s Rechenzeit.
+- **Witness-Datei + unabhängiger Verifier — W (Vertrauensarchitektur):** der Generator muss nicht vertraut werden; der Verifier (Python/NumPy, int32 + gechunkter Varint-Decoder) liest die Datei, prüft CRC, **jedes** Witness (Gültigkeit) und rechnet die **Minimalität** komplett neu (Methode C). Validiert an 10^8, angewandt auf die 10^9-CI-Datei: 0 Abweichungen. Muster: „endliche Rechenläufe als benannte, überprüfbare Zertifikate mit expliziter Vertrauensgrenze" — methodisch inspiriert vom Lean-4-Projekt zur ternären Goldbach-Vermutung (siehe `02_literatur/KI_FORMAL_RECHENLEISTUNG_2026-10.md`, Quelle 1).
+- **GitHub Actions als kostenlose Rechenleistung — W:** public repo = 0 €; ubuntu-latest (4 vCPU, 16 GB RAM) reicht für 10^9 deutlich (6-h-Job-Limit irrelevant); Witness als Artefakt (90 Tage), Ergebnisdatei auto-committet. Limits recherchiert: ebenda, Quellen 14–16.
+- **Verworfene/nicht gewählte Alternativen (mit Grund):**
+  - *C++/Rust statt Go:* kein C-Compiler vorhanden; Rust vorhanden, aber Go einfacher auditierbar — kein Mehrwert.
+  - *NumPy als 10^9-Primärgenerator:* machbar, aber ~10× langsamer und speicherhungriger; NumPy bleibt Verifier (stärkere Rolle: unabhängige Gegenrechnung).
+  - *primesieve als dritter Primzahlgenerator:* technisch und lizenzrechtlich geeignet (BSD-2-Clause), aber PyPI 2.3.4 hat keine Wheels für Python 3.14/Windows (Selbstbau nötig); CLI-Weg (`winget`) möglich, **noch nicht umgesetzt** — offen als nächster Triangulationsschritt.
+  - *Google Colab/Kaggle für Verifikationsläufe:* 12-h-Session-Limits, Idle-Timeouts, verteilte Worker verboten — nur für Heuristik-Experimente geeignet, nie für deterministische Checks.
+  - *Gridbach-/GPU-Preprint-Schranken über 4·10^18 als Referenz:* nicht refereiert — dokumentiert (Quellen 10/12 in `KI_FORMAL_RECHENLEISTUNG_2026-10.md`), nicht kanonisiert.
+  - *Neue analytischen Anläufe (Minor Arcs selbst angreifen):* außer Reichweite dieser Sitzung; die Lücke ist präzise in `05_beweisentwuerfe/LUECKENANALYSE.md` dokumentiert statt mit Pseudo-Fortschritt gefüllt.

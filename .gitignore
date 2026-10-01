@@ -11,6 +11,7 @@ __pycache__/
 # (GitHub-Groessenlimit; regenerierbar mit 06_verifikation/go/goldbach_check.go,
 #  Schritte in 06_verifikation/ANLEITUNG.md)
 06_verifikation/witnessen/*.bin
+06_verifikation/witnessen/**/*.bin
 
 # Sonstiges
 Thumbs.db

@@ -37,13 +37,16 @@ Ein erfundener oder lückenhafter „Beweis“ wäre wissenschaftlich wertlos un
 ```text
 python 06_verifikation/goldbach_check.py 200000
 python 06_verifikation/goldbach_check_set.py 200000
+python 06_verifikation/goldbach_check_np.py 200000
 python 06_verifikation/test_goldbach.py
 ```
 
-Erwartet: 99999 gerade Zahlen in \([4, 200000]\), 0 Fehlschläge, Tests OK.  
+Erwartet: je 99999 gerade Zahlen in \([4, 200000]\), 0 Fehlschläge, max. min. \(p=383\), Tests OK (inkl. Sätze 5–7).
 Das beweist Goldbach **nicht** für alle geraden \(n\).
 
-Elementare geschlossene Sätze: `01_problemstellung/ELEMENTARE_SAETZE.md`.
+**Verifikationsstand (2026-10-01):** alle geraden \(n\le10^9\) geprüft — 10^9-Lauf auf GitHub Actions (kostenlos) und vollständig per unabhängigem NumPy-Verifier gegengeprüft; vier strukturell unabhängige Methoden (A/B/C/D) agreeieren; Witness-Dateien machen jeden Einzelfall prüfbar. Details: `06_verifikation/ANLEITUNG.md`.
+
+Elementare geschlossene Sätze (inkl. Bertrand, O(log n)-Zerlegung, Siebkorrektheit): `01_problemstellung/ELEMENTARE_SAETZE.md`.
 
 ## Repository & Aktualität
 

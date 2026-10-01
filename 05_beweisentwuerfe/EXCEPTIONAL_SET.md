@@ -14,7 +14,8 @@ Sei \(E(X)\) die Anzahl der geraden \(n\le X\), die **keine** Goldbach-Partition
 2. **Montgomery–Vaughan (1975).**  
    Es gibt \(\delta>0\) mit \(E(X)\ll X^{1-\delta}\).  
    H. L. Montgomery, R. C. Vaughan, *The exceptional set in Goldbach’s problem*, Acta Arith. **27** (1975), 353–370.  
-   (Standardzitat der Goldbach-Literatur; Websuche in dieser Sitzung bestätigte die Aussage über Sekundärquellen, das Original ist Acta Arithmetica.)
+   Wichtig (Blattlektüre ausstehend, aber durch Fachsekundärquelle 2026 belegt): das **Original nennt keinen numerischen Wert** für \(\delta\). Bester **expliziter** Wert: **Pintz 2018: \(\delta=0{,}28\)**, also \(E(X)\ll X^{0{,}72}\) (J. Pintz, arXiv:1804.09084; dokumentiert über Bhowmik–Grimmelt arXiv:2607.27282, „to appear Analysis Mathematica").  
+   Neu, **noch unrefereiert** (dokumentieren, nicht kanonisieren): Zhao arXiv:2511.05631, \(E(X)=O(X^{7/10})\) (ineffektive Konstante); Schiavone 2026 (Selbstverlag, computer-assistiert), \(E(X)\ll_\varepsilon X^{23/33+\varepsilon}\approx X^{0{,}697}\). Details: `02_literatur/KI_FORMAL_RECHENLEISTUNG_2026-10.md`, Quellen 22–25.
 
 3. **Was das nicht ist.**  
    \(E(X)=o(X)\) erlaubt immer noch unendlich viele Gegenbeispiele. Selbst \(E(X)\ll X^{1-\delta}\) schließt \(G_{\mathrm{bin}}\) nicht. Nur \(E(X)=0\) für große \(X\) (plus endlicher Check) wäre \(G_{\mathrm{bin}}\).

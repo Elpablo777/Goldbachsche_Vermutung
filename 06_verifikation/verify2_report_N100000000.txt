@@ -1,0 +1,25 @@
+WITNESS-VERIFIKATION v2 (unabhaengig, Python/NumPy, int32 + gechunkter Decoder)
+Datei: 06_verifikation\witnessen\witness_go_N100000000.bin
+Groesse_Bytes: 51602366
+SHA256: 2b540ea5e736b3bc4cbe1e7ba00c23ad4e9e803faf86b37c00b96778cd93dbd8
+Intervall: 4 <= n <= 100000000
+Gepruefte gerade n: 49999999
+
+Checks:
+  [OK]   Header-N stimmt (100000000): True
+  [OK]   CRC32 stimmt (0x844279f2): True
+  [OK]   Tokenanzahl = 49999999 (erwartet 49999999): True
+  [OK]   Alle 2 <= p <= n/2 (Verletzungen: 0): True
+  [OK]   Alle p prim (Verletzungen: 0): True
+  [OK]   Alle n-p prim (Verletzungen: 0): True
+  [OK]   Minimalitaet = Methode C, max min-p = 1093 (Abweichungen: 0): True
+
+Sieb-Aufbau_s: 0.656
+Miniminalitaet-Neuberechnung_s: 7.252
+Stream-Decode+Validitaet_s: 2.860
+Gesamtlaufzeit_s: 10.903
+Python: 3.14.8, NumPy: 2.4.3
+
+Bei allen [OK]: jede gerade Zahl in [4,N] besitzt eine Goldbach-Partition;
+ Gueltigkeit UND Minimalitaet jedes einzelnen Witness durch unabhaengige
+ Neuberechnung bestaetigt. Kein Beweis fuer n > N.

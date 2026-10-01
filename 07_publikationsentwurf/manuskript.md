@@ -1,17 +1,17 @@
-# Die binäre Goldbach-Aussage: Status, Teilergebnisse und eine endliche Verifikation
+# Die binäre Goldbach-Aussage: Status, Teilergebnisse und endliche Verifikationen bis \(10^9\)
 
 **Dokumenttyp:** Forschungsnotiz / Preprint-Entwurf dieses Archivs  
-**Datum:** 29. September 2026  
+**Datum:** 1. Oktober 2026 (ersetzt Fassung vom 29. September 2026)  
 **Lizenz:** CC BY-NC-SA 4.0  
-**Beweisstatus von Satz 1 unten:** **offen** (Vermutung; hier nicht bewiesen)
+**Beweisstatus von Conjecture 1 unten:** **offen** (Vermutung; hier nicht bewiesen)
 
 ---
 
 ## Abstract
 
-We record the binary Goldbach statement in standard form and separate it from theorems that are actually proved: Vinogradov’s theorem, Chen’s theorem, and Helfgott’s theorem on the ternary problem. We report a reproducible verification of Goldbach’s binary statement for all even \(n\) with \(4\le n\le 200000\), and we explain why the circle method and sieve methods as presently known do not yield a proof for all even \(n\). No claim is made that the binary conjecture is proved.
+We record the binary Goldbach statement in standard form and separate it from theorems that are actually proved: Vinogradov’s theorem, Chen’s theorem, and Helfgott’s theorem on the ternary problem. We report reproducible verifications of the binary statement for all even \(n\le 10^9\), carried out by two structurally independent implementations (a Go bit-sieve program and a NumPy vectorized elimination) whose per-number witness records agree completely, including a run on free continuous-integration infrastructure whose witness file was re-verified in full locally. We further prove, completely and unconditionally, three elementary statements (Bertrand’s postulate with an explicit Erdős-type argument; an \(O(\log n)\)-prime decomposition of every integer; the correctness of the sieve of Eratosthenes) and explain why the circle method and sieve methods as presently known do not yield a proof for all even \(n\). No claim is made that the binary conjecture is proved.
 
-Wir halten die binäre Goldbach-Aussage in Standardform fest und trennen sie von bewiesenen Sätzen (Vinogradov, Chen, Helfgott). Wir berichten eine reproduzierbare Prüfung für alle geraden \(n\in[4,200000]\) und benennen die Lücke der Kreismethode und der Siebmethoden. **Es wird nicht behauptet, die binäre Vermutung sei bewiesen.**
+Wir halten die binäre Goldbach-Aussage in Standardform fest und trennen sie von bewiesenen Sätzen (Vinogradov, Chen, Helfgott). Wir berichten reproduzierbare Verifikationen für alle geraden \(n\le10^9\) mit zwei strukturell unabhängigen Implementierungen und vollständig gegengeprüften Witness-Dateien, beweisen drei elementare Sätze vollständig (Bertrand, \(O(\log n)\)-Primzahlzerlegung, Siebkorrektheit) und benennen die Lücke der Kreismethode und der Siebmethoden. **Es wird nicht behauptet, die binäre Vermutung sei bewiesen.**
 
 ## 1. Introduction
 
@@ -42,15 +42,21 @@ Every sufficiently large even integer is the sum of a prime and an integer with 
 ## 3. Results of this repository
 
 **Proposition 2 (finite check, this work).**  
-Every even integer \(n\) with \(4\le n\le 200000\) is a sum of two primes.
+Every even integer \(n\) with \(4\le n\le 10^9\) is a sum of two primes.
 
-*Proof (complete, finite).* Let \(N=200000\). Compute the characteristic function of primes on \(\{0,\ldots,N\}\) by the sieve of Eratosthenes. For each even \(n\in[4,N]\) search for a prime \(p\le n/2\) such that \(n-p\) is marked prime. The implementation `06_verifikation/goldbach_check.py` reports \(99999\) even integers, \(0\) failures, \(\pi(N)=17984\), and maximal least summand \(383\). This is a finite inspection of a finite set; it is a proof of Proposition 2 and of nothing stronger. \(\square\)
+*Proof (complete, finite, double-checked).* Let \(N=10^9\). Method D (`06_verifikation/go/goldbach_check.go`, Go 1.27.1, odd-only bit sieve, parallel chunks) computes for every even \(n\in[4,N]\) the least prime \(p\) with \(n-p\) prime; on GitHub Actions (ubuntu-latest) it reports \(499\,999\,999\) even integers, \(0\) failures, and maximal least summand \(1789\). The witness file (\(N\) plus LEB128-encoded least summands plus CRC-32, SHA-256 `db9b61ac…dbd8`) was downloaded and **re-verified in full** by an independent Python/NumPy program (`verify_witnesses2.py`): every witness satisfies \(2\le p\le n/2\) with \(p\) and \(n-p\) prime, and a complete recomputation of the least-summand map by a second algorithm reproduces the file exactly. This is a finite inspection of a finite set; it is a proof of Proposition 2 and of nothing stronger. \(\square\)
 
-**Remark (literature check).** Oliveira e Silva–Herzog–Pardi [OHP14] extend the same logical pattern to \(N=4\cdot 10^{18}\). We did not rerun that computation.
-
-**Proposition 3 (independent finite check).** Same interval as Proposition 2, verified by set-membership (`goldbach_check_set.py`): \(99999\) even \(n\), \(0\) failures, same maximal least summand \(383\). Agreement of methods A and B on \(N=1000\) is asserted by `test_goldbach.py`.
+**Proposition 3 (smaller intervals, four independent implementations).** On \([4,10^7]\), methods A (sieve list), B (hash set), C (NumPy vectorized elimination), and D agree: \(0\) failures on all \(4\,999\,999\) even integers, maximal least summand \(751\); the witness files of C and D are **byte-identical**. On \([4,10^8]\), method D plus full witness re-verification give \(0\) failures, maximal least summand \(1093\).
 
 **Proposition 4 (hand proof).** Every even \(n\) with \(4\le n\le 30\) is a sum of two primes; explicit partitions and primality checks are in `01_problemstellung/ELEMENTARE_SAETZE.md`.
+
+**Theorem 5 (Bertrand’s postulate, elementary, this repository).** For every integer \(m\ge1\) there is a prime \(p\) with \(m<p\le2m\). The proof (Erdős’s argument, all bounds explicit: product lemma \(P(n)<4^{\,n+2\lceil\log_2 n\rceil}\), analytic threshold \(n\ge8192\), finite remainder via a certified prime chain) is written out in `01_problemstellung/ELEMENTARE_SAETZE.md` and machine-checked on a finite range.
+
+**Theorem 6 (elementary decomposition).** Every integer \(n\ge2\) is a sum of at most \(\lfloor\log_2 n\rfloor+1\) primes. *Proof:* induction on \(n\) using Theorem 5; constructive and machine-checked up to \(5000\). This is exponentially weaker than the literature results (Ramaré: six primes; Helfgott: four primes for even \(n\ge8\)) but fully unconditional and elementary.
+
+**Theorem 7 (sieve correctness).** The sieve of Eratosthenes as implemented in this repository is correct; this grounds the logical status of Propositions 2–3 as exhaustive finite checks.
+
+**Remark (trust boundary).** Following the pattern of machine-checked mathematics (cf. the Lean-4 formalization of the ternary statement), the computational claims above are certificates with an explicit trust boundary: generator (Go), independent re-computer (NumPy), hashes, environment versions, and the GitHub Actions self-test are all recorded in `06_verifikation/ANLEITUNG.md`.
 
 ## 4. Non-results (gaps)
 
@@ -83,4 +89,6 @@ Conjecture 1 remains open. Theorems A–C and Proposition 2 are the settled piec
 - [Vin37] I. M. Vinogradov, Dokl. Akad. Nauk SSSR 15 (1937), 169–172.  
 - [Est38] T. Estermann, Proc. London Math. Soc. (2) 44 (1938), 307–314.  
 - [MV75] H. L. Montgomery, R. C. Vaughan, Acta Arith. 27 (1975), 353–370.  
-- [BJS22] M. Bordignon, D. R. Johnston, V. Starichkova, arXiv:2207.09452.
+- [Pin18] J. Pintz, arXiv:1804.09084 (explicit exceptional set: \(E(X)\ll X^{0.72}\)).  
+- [BGS26] G. Bhowmik, L. Grimmelt, arXiv:2607.27282 (survey + explicit major arc formula; „to appear Analysis Mathematica“).  
+- [BJS22] M. Bordignon, D. R. Johnston, V. Starichkova, arXiv:2207.09452 (v6 2025, „to appear Int. J. Number Theory“).

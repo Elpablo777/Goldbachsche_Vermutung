@@ -142,3 +142,40 @@ Andere Agenten dürfen Einträge nur **anhängen**, nicht stumm überschreiben.
 **Nächster Schritt**
 
 - Commit+Push; GitHub-Actions-Workflow für N=10^9 (kostenlose Runner); elementare Sätze 5–6; Doku-Update.
+
+---
+
+## 2026-10-01 — Meilenstein 10^9 (CI + vollständige Gegenverifikation), Sätze 5–7, Literatur/KI-Recherche (v4)
+
+**Rechenläufe**
+
+- Methode A/B zusätzlich bei 10^7: je 0 Fehlschläge, max min-p = 751 (7,7 s / 4,0 s) → **vier Methoden agreeieren** auf 10^7.
+- **GitHub Actions (kostenlos, public repo):** Workflow `.github/workflows/goldbach.yml` (Build → Selbsttest N=2·10^5 mit erzwungenem 383-Ergebnis → Lauf N=10^9 → SHA256 → Artefakt → Auto-Commit). Run 36891298929: **success in 1 m 11 s**; Ergebnis: 499 999 999 gerade n ≤ 10^9, **0 Fehlschläge**, max min-p = **1789**, Go 1.27.1, 4 vCPU, 13,2 s Rechenzeit.
+- Artefakt (524 383 817 Bytes) heruntergeladen; **SHA256 identisch** zur CI-Aufzeichnung (`db9b61ac…dbd8`).
+- **Vollständige lokale Gegenverifikation** (`verify_witnesses2.py`, int32 + gechunkter vektorisierter Varint-Decoder): Header/CRC/Tokenzahl ✓, **jedes** Witness gültig (2 ≤ p ≤ n/2, p prim, n−p prim) ✓, **Minimalität komplett neu gerechnet** (Methode C) → **0 Abweichungen**, max min-p = 1789. Gesamt 112,7 s. Verifier vorher an der bereits geprüften 10^8-Datei validiert.
+
+**Neue Beweise (elementar, lückenlos; `01_problemstellung/ELEMENTARE_SAETZE.md`)**
+
+- **Satz 5 (Bertrand):** Erdős-Argument mit vollständig ausgeführtem Produktlemma \(P(n)<4^{n+2\lceil\log_2 n\rceil}\) (Beweis über die Rekursion \(P(2m)\le P(m)\binom{2m}{m}<4^mP(m)\) + \(\lceil n/2\rceil\)-Induktion), analytischer Bereich n ≥ 8192 mit expliziter G-Funktion und Ableitungsabschätzung, endlicher Bereich per zertifizierter Primzahlkette bis 10007 (jede Primheit per Probedivision + Maschinencheck). **Während des Schreibens korrigiert:** die naive Induktion \(P(n+1)=P(n)(n+1)\) scheitert am Primfall (Faktor q > 4); die Korrektur steht hier als dokumentierter Verwerfungsgrund.
+- **Satz 6:** jede ganze Zahl n ≥ 2 ist Summe von höchstens \(\lfloor\log_2 n\rfloor+1\) Primzahlen (Induktion über Satz 5, konstruktiv).
+- **Satz 7:** Korrektheit des Eratosthenes-Siebs (begründet formal den logischen Status aller Verifikationsläufe).
+- Maschinenchecks (`test_goldbach.py`): Ketten-Primheit/Lücken, Bertrand numerisch bis 10^5, Satz-6-Zerlegungen bis 5000 → **ALLE TESTS OK**.
+
+**Recherche (Hintergrundagent 2, abgeschlossen; Datei `02_literatur/KI_FORMAL_RECHENLEISTUNG_2026-10.md`, 28 Quellen)**
+
+- **KI/LLM:** AlphaProof/AlphaEvolve/LLM-Agenten/Taos ETP haben G_bin 2024–2026 **nicht angegangen** — kein Arbeitsersparnis-Potenzial; Erwartung bestätigt.
+- **Formale Verifikation:** ternäre Goldbach existiert als Lean-4-Standalone-Projekt (Bialer, „computational trust boundary", KI-assisted) — methodisches Vorbild für unsere Witness-/Vertrauensgrenzen-Architektur; kein AFP/Coq/mathlib-Eintrag.
+- **Rekorde:** akademischer Verifikationsrekord bleibt 4·10^18 (OHP14); darüber nur unrefereierte Claims (Gridbach-Medium-Post, GPU-Preprint arXiv:2603.07850).
+- **Explizite Schranken:** bester Ausnahmemengen-Exponent Pintz 2018 (δ=0,28 ⇒ X^0,72); Zhao X^{7/10} und Schiavone X^{23/33} nur unrefereiert; Chen exp(exp(32,7)) v6 „to appear IJNT"; Vinogradov-Konstante obsolet.
+- **Kostenlose Rechenleistung:** GitHub Actions für 10^9 geeignet (bestätigt durch unseren Lauf); primesieve geeigneter dritter Generator, aber ohne py3.14-Wheels (CLI-Weg offen); Colab/Kaggle nur für Heuristik.
+- Hintergrundagent 1 (Literatur-Update `UPDATE_2026-10.md`) läuft noch; Einarbeitung folgt.
+
+**Verworfene Alternativen (Warum)** — siehe auch `03_methoden/METHODENKATALOG.md`
+
+- Naive Induktion im Produktlemma: mathematisch falsch (korrigiert, Grund dokumentiert).
+- Full verify der 10^9-Datei mit Verifier v1 (int64): ~20 GB RAM-Bedarf > verfügbare 15,7 GB → v2 mit int32 + Streaming.
+- Colab/Kaggle für Verifikation: Session-Limits/Verbote machen deterministische Läufe unbrauchbar.
+
+**Nächster Schritt**
+
+- Push v4; Agent-1-Ergebnis einarbeiten; optional primesieve-Triangulation. G_bin bleibt **offen**.
