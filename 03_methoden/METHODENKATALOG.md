@@ -75,7 +75,7 @@ Klingt nach Dirichlet, liefert aber keine gleichmäßige untere Schranke für \(
 - **Verworfene/nicht gewählte Alternativen (mit Grund):**
   - *C++/Rust statt Go:* kein C-Compiler vorhanden; Rust vorhanden, aber Go einfacher auditierbar — kein Mehrwert.
   - *NumPy als 10^9-Primärgenerator:* machbar, aber ~10× langsamer und speicherhungriger; NumPy bleibt Verifier (stärkere Rolle: unabhängige Gegenrechnung).
-  - *primesieve als dritter Primzahlgenerator:* technisch und lizenzrechtlich geeignet (BSD-2-Clause), aber PyPI 2.3.4 hat keine Wheels für Python 3.14/Windows (Selbstbau nötig); CLI-Weg (`winget`) möglich, **noch nicht umgesetzt** — offen als nächster Triangulationsschritt.
+  - *primesieve als dritter Primzahlgenerator:* umgesetzt (2026-10-01, `winget install primesieve`, v12.16, BSD-2-Clause): π(10⁹) = 50 847 534 und die Primzahl-Liste in [999·10⁶, 10⁹] stimmen exakt mit dem NumPy-Sieb überein (`06_verifikation/triangulierung_primesieve.txt`) — empirische Triangulation der Sieb-Korrektheit über Satz 7 hinaus.
   - *Google Colab/Kaggle für Verifikationsläufe:* 12-h-Session-Limits, Idle-Timeouts, verteilte Worker verboten — nur für Heuristik-Experimente geeignet, nie für deterministische Checks.
   - *Gridbach-/GPU-Preprint-Schranken über 4·10^18 als Referenz:* nicht refereiert — dokumentiert (Quellen 10/12 in `KI_FORMAL_RECHENLEISTUNG_2026-10.md`), nicht kanonisiert.
   - *Neue analytischen Anläufe (Minor Arcs selbst angreifen):* außer Reichweite dieser Sitzung; die Lücke ist präzise in `05_beweisentwuerfe/LUECKENANALYSE.md` dokumentiert statt mit Pseudo-Fortschritt gefüllt.

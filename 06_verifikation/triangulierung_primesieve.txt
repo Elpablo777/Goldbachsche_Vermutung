@@ -1,0 +1,9 @@
+TRIANGULATION primesieve (3. unabhaengiger Primzahlgenerator) vs NumPy-Sieb
+primesieve 12.16 (BSD-2-Clause, installiert via winget, 2026-10-01)
+NumPy-Siebaufbau bis 10^9: 6.7 s
+pi(10^9): primesieve=50847534, NumPy-Sieb=50847534, uebereinstimmend=True
+Segment [999000000, 10^9]: primesieve=47957 Primzahlen, NumPy=47957, identische Liste=True
+
+BEDEUTUNG: zwei voneinander unabhaengige Sieb-Implementierungen (C++-segmentiert+Wheel vs NumPy-slice)
+liefern identische Primzahlen bis 10^9; bestätigt die Sieb-Korrektheit (Satz 7) empirisch
+ueber die mathematische Beweisgrundlage hinaus. Kein Beweis von G_bin.

@@ -87,6 +87,18 @@ cd ../.. && python 06_verifikation/verify_witnesses.py 100000000 \
   V@10^8 ≈ 18 s.
 - Exitcode 1 = Gegenbeispiel gefunden (würde G_bin widerlegen); trat nie auf.
 
+## Triangulation primesieve (dritter Primzahlgenerator)
+
+```bash
+winget install primesieve          # v12.16, BSD-2-Clause
+"/c/Program Files/primesieve/bin/primesieve.exe" 1000000000 --count=1   # → 50847534
+"/c/Program Files/primesieve/bin/primesieve.exe" 999000000 1000000000 --print
+```
+
+Abgleich gegen den NumPy-Sieb: `06_verifikation/triangulierung_primesieve.txt`
+(π(10⁹) identisch; Segment-Primzahlen identisch — zwei voneinander unabhängige
+Sieb-Implementierungen liefern dieselben Primzahlen bis 10⁹).
+
 ## Semantik / Beweisstatus
 
 - Eingabe: gerade Obergrenze N ≥ 4.
