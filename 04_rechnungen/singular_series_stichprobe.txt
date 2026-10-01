@@ -1,0 +1,16 @@
+Hardy–Littlewood-Vergleich (heuristisch, KEIN Beweis):
+  G_2(n) := Anzahl ungeordneter Partitionen p+q=n, p<=q prim
+  Asymptotik (Vermutung): G_2(n) ~ S(n) * n / (log n)^2
+  (Normierung hier: S(n) wie oben mit Vorfaktor 2 im unendlichen Produkt.)
+
+       n       G2           S(n)    S*n/(log n)^2  Verhaeltnis
+      10        2     1.76043292           3.3204     0.602340
+      12        1     2.64064938           5.1318     0.194862
+      30        3     3.52086584           9.1308     0.328560
+     100        6     1.76043292           8.3010     0.722808
+     210       19     4.22503901          31.0322     0.612268
+    1000       28     1.76043292          36.8931     0.758949
+   10080      315     4.22503901         501.1743     0.628524
+   30030      905     5.12125941        1446.8343     0.625504
+
+Interpretation: Verhältnis nahe 1 stützt die Heuristik, beweist sie nicht.
