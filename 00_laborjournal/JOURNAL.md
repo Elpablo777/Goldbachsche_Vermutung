@@ -206,3 +206,30 @@ Andere Agenten dürfen Einträge nur **anhängen**, nicht stumm überschreiben.
 **Nächster Schritt**
 
 - Commit+Push v5. Projektphase „Verifikation + Beweisteile + Recherche" ist abgeschlossen; Entscheidung über Weiterlauf (z. B. N > 10^9 via CI-Matrix, M–V-Blattlektüre) beim Nutzer. G_bin bleibt **offen** — kein Beweis, kein Scheinbeweis.
+
+---
+
+## 2026-10-01 — STOPP und Archivierung durch Nutzerentscheidung (v6, final)
+
+**Entscheidung.** Nutzer hat das Projekt gestoppt („wir stoppen das … schau das mit den Stand und Verweise und warum und wieso das nicht ging und archivieren dann das repo"). Hintergrund: Ein Beweis von \(G_{\mathrm{bin}}\) war, wie von Anfang an ehrlich kommuniziert, nicht erreichbar (offenes Problem seit 1742; KI/LLM-Analyse bestätigte: kein Ansatzpunkt vorhanden).
+
+**Letzte Fachaktion vor dem Stopp (vollendet und getestet, dann eingefroren)**
+
+- Segmentmodus in `06_verifikation/go/goldbach_check.go` (`-A`-Start, Formate GBWIT1/GBWITSEG1) für künftige CI-Matrix-Läufe implementiert und **zweifach regressionsgetestet**: (1) A=4-Witness-Datei byte-identisch zum v4-Monolith-Lauf; (2) Segment-Payload [4000002, 10^7] identisch mit dem Tokenfenster des Voll-Laufs. Bewusst **nicht** als produktives Feature deklariert: Matrix-Workflow und Verifier-Unterstützung für GBWITSEG1 fehlen (dokumentiert in `06_verifikation/ANLEITUNG.md`).
+
+**Abschlussdokumentation**
+
+- Neu: `ABSCHLUSSBERICHT.md` — der eine zentrale Endstand-Report: (§2) Endstand mit Verweisen auf jede Datei, (§3) warum/wieso ein Beweis nicht möglich war (Minor-Arc-Lücke, „endlich ≠ alle n", KI-Stand, Fachstand), (§4) Betriebs-Log alles Nicht-Gegangenen mit Gründen, (§5) Wiederaufnahmebedingungen, (§6) Lizenz.
+- `STATUS.md` und `README.md`: Archiv-Header mit Verweis auf den Abschlussbericht.
+- `06_verifikation/ANLEITUNG.md`: Segmentmodus dokumentiert (inkl. Offen-Punkten).
+
+**Archivierung**
+
+- Finaler Commit+Push (v6), danach: Repo-Beschreibung aktualisiert und Repository auf GitHub **read-only archiviert**.
+- Lokale Witness-Dateien (regenerierbar) bleiben auf dem Rechner des Nutzers.
+
+**Schlussstatus (unverändert und endgültig protokolliert)**
+
+- \(G_{\mathrm{bin}}\): **NICHT BEWIESEN** — offenes Problem. Kein Beweis, kein Scheinbeweis.
+- Verifikation: alle geraden \(n\le10^9\), 0 Fehlschläge, max min-p = 1789, vollständig gegengeprüft.
+- Bewiesen im Archiv: Sätze 1–7 (elementar, lückenlos, maschinengeprüft).

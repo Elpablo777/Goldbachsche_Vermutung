@@ -1,5 +1,7 @@
 # Forschungsarchiv: Goldbachsche Vermutung
 
+> **ARCHIVIERT (2026-10-01):** Das Projekt ist abgeschlossen und dieses Repository read-only gestellt. Die Zielaussage (binäre Goldbach-Vermutung) ist **nicht bewiesen** — sie ist ein offenes Problem. Endstand, alle Verweise und die Begründung, warum kein Beweis möglich war: [`ABSCHLUSSBERICHT.md`](ABSCHLUSSBERICHT.md).
+
 Dieses Verzeichnis ist das **einzige** Arbeitsprodukt für die Aufgabe, die binäre Goldbach-Aussage nach Publikationsstandards zu behandeln. Andere Agenten sollen hier lesen, rechnen und gegenprüfen — nicht aus Chatverläufen.
 
 ## Ehrliche Kernaussage

@@ -1,6 +1,7 @@
 # STATUS — binäre Goldbachsche Vermutung
 
 **Stand:** 2026-10-01  
+**Projektstatus: ARCHIVIERT** (Nutzerentscheidung; Repository read-only). Endstand, Verweise und die vollständige Begründung, warum kein Beweis möglich war: **`ABSCHLUSSBERICHT.md`** — immer zuerst lesen.  
 **Gesamtstatus der Zielaussage:** **NICHT BEWIESEN**
 
 Die binäre (starke) Goldbach-Aussage

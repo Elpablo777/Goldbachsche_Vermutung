@@ -3,11 +3,14 @@
 // ungerades Bitsieb, eigene Witness-Suche, parallele Chunks mit nachgelagerter
 // sequenzieller Statistik).
 //
-// Kein Beweis von G_bin fuer alle n — endliche Verifikation auf [4, N].
+// Kein Beweis von G_bin fuer alle n — endliche Verifikation auf [A, N].
 //
-// Witness-Datei (identisches Format zu Methode C, siehe ANLEITUNG.md):
-//   "GBWIT1\n" + "<N>\n" + LEB128-Varints (minimales p fuer n=4,6,...,N)
-//   + 4 Bytes CRC32 (IEEE, little-endian) ueber den Payload.
+// Segmentmodus (-A > 4): prueft nur [A, N] (fuer CI-Matrix-Parallellaeufe).
+// Das Sieb bleibt ein Voll-Sieb bis N (isPrime(n-p) braucht alle q <= N).
+// Witness-Dateien:
+//   A == 4: Format GBWIT1 ("GBWIT1\n" + "<N>\n" + Varints + CRC32)
+//   A >  4: Format GBWITSEG1 ("GBWITSEG1\n" + "<N>\n" + "<A>\n" + Varints + CRC32)
+// Varints: LEB128 des minimalen p fuer n = A, A+2, ..., N (in dieser Reihenfolge).
 package main
 
 import (
@@ -25,17 +28,18 @@ import (
 )
 
 // PCAP: obere Schranke fuer gesuchte minimale Summandenprimzahlen.
-// Fuer N <= 4e18 ist empirisch max min-p = 9781 (Oliveira e Silva et al.),
-// daher ist 1<<20 großzuegig. Wird ein n nicht unter PCAP aufloesbar,
-// zaehlt es als Fehlschlag (wird niemals stillschweigend ignoriert).
+// Empirisch ist max min-p = 9781 bis 4e18 (Oliveira e Silva et al.); 1<<20
+// ist großzuegig. Wird ein n nicht unter PCAP aufgeloest, zaehlt es als
+// Fehlschlag (wird niemals stillschweigend ignoriert).
 const PCAP = 1 << 20
 
 var (
-	sieve      []byte // Bitsieb: Bit i <-> ungerade Zahl 2i+1 ist prim
-	oddPrimes  []uint32
-	w16        []uint16 // w16[k-2] = minimales p fuer n=2k
-	hist       []int64
-	firstN     []int64 // erstes n mit Witness p
+	sieve     []byte // Bitsieb: Bit i <-> ungerade Zahl 2i+1 ist prim
+	oddPrimes []uint32
+	w16       []uint16 // w16[k-kBase] = minimales p fuer n=2k
+	kBase     int
+	hist      []int64
+	firstN    []int64 // erstes n (im Segment) mit Witness p
 	failCount  int64
 	firstFailN int64
 )
@@ -106,25 +110,36 @@ func worker(kStart, kEnd int, wg *sync.WaitGroup) {
 				atomic.StoreInt64(&firstFailN, int64(n))
 			}
 		}
-		w16[k-2] = w
+		w16[k-kBase] = w
 	}
 }
 
+// nextBlockEnd liefert das kleinste Zehnerpotz-Ende > a (Bloecke [.., 10], (10,100], ...).
+func nextBlockEnd(a int) int {
+	b := 10
+	for b <= a {
+		b *= 10
+	}
+	return b
+}
+
 func main() {
-	N := flag.Int("N", 200000, "gerade Obergrenze N >= 4")
+	N := flag.Int("N", 200000, "gerade Obergrenze N >= 4 (Segmentende)")
+	A := flag.Int("A", 4, "gerader Segmentstart >= 4 (Default 4 = Vollbereich)")
 	witnessPath := flag.String("witness", "", "optional: Pfad der Witness-Datei")
 	outPath := flag.String("out", "", "optional: Pfad der Ergebnisdatei")
 	flag.Parse()
 
-	if *N < 4 || *N%2 != 0 {
-		fmt.Fprintln(os.Stderr, "N muss gerade und >= 4 sein")
+	if *N < 4 || *N%2 != 0 || *A < 4 || *A%2 != 0 || *A > *N {
+		fmt.Fprintln(os.Stderr, "Bedingung verletzt: 4 <= A <= N, N gerade, A gerade")
 		os.Exit(2)
 	}
 	t0 := time.Now()
 
 	buildSieve(*N)
+	kBase = *A / 2
 	kmax := *N / 2
-	w16 = make([]uint16, kmax-1) // k = 2..kmax
+	w16 = make([]uint16, kmax-kBase+1) // k = kBase..kmax
 	hist = make([]int64, PCAP+1)
 	firstN = make([]int64, PCAP+1)
 
@@ -132,12 +147,12 @@ func main() {
 	if workers > 16 {
 		workers = 16
 	}
-	chunk := (kmax - 1) / workers
+	chunk := (kmax - kBase + 1) / workers
 	if chunk == 0 {
 		chunk = 1
 	}
 	var wg sync.WaitGroup
-	for kStart := 2; kStart <= kmax; kStart += chunk {
+	for kStart := kBase; kStart <= kmax; kStart += chunk {
 		kEnd := kStart + chunk - 1
 		if kEnd > kmax {
 			kEnd = kmax
@@ -148,39 +163,41 @@ func main() {
 	wg.Wait()
 
 	// Sequenzielle Statistik über w16 (Reihenfolge deterministisch).
-	maxP := 0
-	blocks := []struct{ a, b, m, firstN int }{}
-	decadeMax, decadeFirst, decadeA := 0, 0, 4
-	mag := 1
-	for k := 2; k <= kmax; k++ {
-		p := int(w16[k-2])
+	type block struct{ a, b, m, firstN int }
+	blocks := []block{}
+	blockA := *A
+	blockEnd := nextBlockEnd(*A)
+	if blockEnd > *N {
+		blockEnd = *N
+	}
+	decadeMax, decadeFirst := 0, 0
+	for k := kBase; k <= kmax; k++ {
+		p := int(w16[k-kBase])
 		if p == 0 {
 			continue
-		}
-		if p > maxP {
-			maxP = p
 		}
 		hist[p]++
 		if firstN[p] == 0 {
 			firstN[p] = int64(2 * k)
 		}
 		n := 2 * k
-		if n > decadeB(decadeA) {
-			blocks = append(blocks, struct{ a, b, m, firstN int }{decadeA, decadeB(decadeA), decadeMax, decadeFirst})
-			decadeA = decadeB(decadeA) + 1
+		if n > blockEnd {
+			blocks = append(blocks, block{blockA, blockEnd, decadeMax, decadeFirst})
+			blockA = blockEnd + 1
+			blockEnd = nextBlockEnd(blockA)
+			if blockEnd > *N {
+				blockEnd = *N
+			}
 			decadeMax, decadeFirst = 0, 0
-			mag++
 		}
-		if n >= decadeA && p > decadeMax {
+		if p > decadeMax {
 			decadeMax = p
 			decadeFirst = n
 		}
 	}
-	if decadeMax > 0 || decadeA <= *N {
-		blocks = append(blocks, struct{ a, b, m, firstN int }{decadeA, *N, decadeMax, decadeFirst})
-	}
+	blocks = append(blocks, block{blockA, *N, decadeMax, decadeFirst})
 
-	// Rekordhalter aus Histogramm+firstN (p aufsteigend).
+	// Rekordhalter aus Histogramm+firstN (p aufsteigend, innerhalb des Segments).
 	type rec struct {
 		p, first, cnt int64
 	}
@@ -197,38 +214,44 @@ func main() {
 	}
 
 	elapsed := time.Since(t0)
-	checked := int64(kmax - 1)
+	checked := int64(kmax - kBase + 1)
 	fails := atomic.LoadInt64(&failCount)
 	firstFail := atomic.LoadInt64(&firstFailN)
+	maxP := runMax
 
+	segLabel := fmt.Sprintf("[%d, %d]", *A, *N)
+	if *A == 4 {
+		segLabel = fmt.Sprintf("[4, %d]", *N)
+	}
 	lines := []string{
 		"BINÄRE GOLDBACH-VERIFIKATION METHODE D (Go, ungerades Bitsieb, parallel)",
-		fmt.Sprintf("Intervall: alle geraden n mit 4 <= n <= %d", *N),
+		fmt.Sprintf("Intervall: alle geraden n mit %s", segLabel),
+		fmt.Sprintf("Segmentmodus: A=%d, N=%d (Sieb bis N, Witness-Suche im Segment)", *A, *N),
 		"Methode: ungerades Bitsieb (Bit i <-> 2i+1); Witness p per aufsteigender",
 		"         Suche in ungeraden Primzahlen; p=2 nur fuer n=4 relevant;",
 		"         parallele Chunks, deterministische sequenzielle Statistik.",
 		fmt.Sprintf("Anzahl geprüfter gerader n: %d", checked),
 		fmt.Sprintf("Anzahl Fehlschläge: %d", fails),
 		fmt.Sprintf("Erster Fehlschlag: %s", i64opt(firstFail, fails)),
-		fmt.Sprintf("Größtes minimales p(n): %d", maxP),
-		fmt.Sprintf("Anzahl Primzahlen <= %d (ungerade, bis PCAP=%d): %d", *N, PCAP, len(oddPrimes)),
+		fmt.Sprintf("Größtes minimales p(n) im Segment: %d", maxP),
+		fmt.Sprintf("Anzahl ungerader Primzahlen bis PCAP=%d: %d", PCAP, len(oddPrimes)),
 		fmt.Sprintf("Laufzeit_s: %.6f", elapsed.Seconds()),
 		fmt.Sprintf("Go: %s", runtime.Version()),
 		fmt.Sprintf("GOMAXPROCS/NumCPU: %d/%d", runtime.GOMAXPROCS(0), runtime.NumCPU()),
 		"",
-		"Rekordhalter (p, erstes n mit min-p = p, Anzahl n mit diesem Rekord):",
+		"Rekordhalter im Segment (p, erstes n mit min-p = p, Anzahl n):",
 	}
 	for _, r := range records {
 		lines = append(lines, fmt.Sprintf("  p=%6d  n_erste=%12d  anzahl=%d", r.p, r.first, r.cnt))
 	}
-	lines = append(lines, "", "Maximales minimales p(n) pro Zehnerpotz-Block [A,B]:")
+	lines = append(lines, "", "Maximales minimales p(n) pro Block (Zehnerpotz-Grenzen, auf Segment beschnitten):")
 	for _, b := range blocks {
 		lines = append(lines, fmt.Sprintf("  [%12d, %12d]  max_min_p=%6d  erstes_n=%12d", b.a, b.b, b.m, b.firstN))
 	}
 	lines = append(lines,
 		"",
 		"BEWEISSTATUS DIESES LAUFS:",
-		"  Wenn Fehlschlaege=0: die Aussage gilt fuer alle geraden n in [4,N].",
+		"  Wenn Fehlschlaege=0: die Aussage gilt fuer alle geraden n im Intervall.",
 		"  Daraus folgt NICHT die Aussage fuer alle geraden n >= 4.",
 		"")
 	if fails > 0 {
@@ -246,7 +269,7 @@ func main() {
 	fmt.Print(text)
 
 	if *witnessPath != "" {
-		if err := writeWitness(*witnessPath, *N); err != nil {
+		if err := writeWitness(*witnessPath, *A, *N); err != nil {
 			fmt.Fprintln(os.Stderr, "witness:", err)
 			os.Exit(3)
 		}
@@ -257,17 +280,6 @@ func main() {
 	}
 }
 
-func decadeB(a int) int { // a ist 10^j oder 4
-	if a == 4 {
-		return 10
-	}
-	j := 0
-	for t := a; t >= 10; t /= 10 {
-		j++
-	}
-	return a * 10
-}
-
 func i64opt(v int64, cond int64) string {
 	if cond == 0 {
 		return "None"
@@ -275,16 +287,24 @@ func i64opt(v int64, cond int64) string {
 	return strconv.FormatInt(v, 10)
 }
 
-func writeWitness(path string, N int) error {
+func writeWitness(path string, A, N int) error {
 	f, err := os.Create(path)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 	bw := bufio.NewWriterSize(f, 1<<20)
-	bw.WriteString("GBWIT1\n")
-	bw.WriteString(strconv.Itoa(N))
-	bw.WriteByte('\n')
+	if A == 4 {
+		bw.WriteString("GBWIT1\n")
+		bw.WriteString(strconv.Itoa(N))
+		bw.WriteByte('\n')
+	} else {
+		bw.WriteString("GBWITSEG1\n")
+		bw.WriteString(strconv.Itoa(N))
+		bw.WriteByte('\n')
+		bw.WriteString(strconv.Itoa(A))
+		bw.WriteByte('\n')
+	}
 	var varintBuf [10]byte
 	crc := crc32.NewIEEE()
 	payloadBuf := make([]byte, 0, 1<<20)
@@ -298,8 +318,8 @@ func writeWitness(path string, N int) error {
 		}
 		return nil
 	}
-	for k := 2; k <= N/2; k++ {
-		p := int64(w16[k-2])
+	for k := A / 2; k <= N/2; k++ {
+		p := int64(w16[k-kBase])
 		if p == 0 {
 			return fmt.Errorf("kein Witness fuer n=%d; Datei wuerde unvollstaendig", 2*k)
 		}

@@ -99,6 +99,22 @@ Abgleich gegen den NumPy-Sieb: `06_verifikation/triangulierung_primesieve.txt`
 (π(10⁹) identisch; Segment-Primzahlen identisch — zwei voneinander unabhängige
 Sieb-Implementierungen liefern dieselben Primzahlen bis 10⁹).
 
+## Segmentmodus (für große Skalen, Wiederaufnahme)
+
+```bash
+cd 06_verifikation/go && go build -o goldbach_check.exe .
+./goldbach_check.exe -A 4000002 -N 10000000 -witness seg.bin -out seg_ergebnis.txt
+```
+
+`-A` = gerader Segmentstart (Default 4 = Vollbereich). Das Sieb bleibt ein
+Voll-Sieb bis N; die Witness-Suche läuft nur im Segment [A, N] — Grundlage
+für CI-Matrix-Parallelläufe (z. B. 10 × 10^9-Segmente bis 10^10).
+Witness-Formate: `GBWIT1` (A=4, unverändert) und `GBWITSEG1` (A>4, Kopfzeile
+mit A). Getestet (2026-10-01): A=4-Witness-Datei **byte-identisch** zum
+Voll-Lauf; Segment-Payload identisch mit dem Tokenfenster des Voll-Laufs.
+**Offen bei Archivierung:** Matrix-Workflow und GBWITSEG1-Unterstützung im
+Verifier (`verify_witnesses2.py`) — bewusst nicht als fertig deklariert.
+
 ## Semantik / Beweisstatus
 
 - Eingabe: gerade Obergrenze N ≥ 4.

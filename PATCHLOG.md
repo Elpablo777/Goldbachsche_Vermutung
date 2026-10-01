@@ -1,5 +1,14 @@
 # Patchlog
 
+## 2026-10-01 — Archiv v6 (final): STOPP und Archivierung
+
+- Nutzerentscheidung: Projekt gestoppt; Endstand/Verweise/Gründe dokumentiert, Repo archiviert.
+- Neu: `ABSCHLUSSBERICHT.md` (Endstand mit Verweisen, warum kein Beweis möglich war, Betriebs-Log der Fehlschläge, Wiederaufnahmebedingungen).
+- Neu: Segmentmodus in `go/goldbach_check.go` (`-A`), zweifach regressionsgetestet (A=4 byte-identisch zum Voll-Lauf; Segment-Payload = Tokenfenster) — bewusst mit offenen Punkten dokumentiert (Matrix-Workflow, GBWITSEG1 im Verifier).
+- `STATUS.md`/`README.md`: Archiv-Header; `06_verifikation/ANLEITUNG.md`: Segmentmodus-Doku.
+- GitHub-Repository read-only archiviert; Beschreibung aktualisiert.
+- Schlussstatus: \(G_{\mathrm{bin}}\) **NICHT BEWIESEN**; Verifikation bis 10^9 (0 Fehlschläge); Sätze 1–7 bewiesen.
+
 ## 2026-10-01 — Archiv v5: Literatur-Update abgeschlossen
 
 - Neu: `02_literatur/UPDATE_2026-10.md` (nach Ausfall des Hintergrundagenten direkt recherchiert): sweet.ua.pt erneut geöffnet (Double-Check bis 4·10^17, ~781,8 CPU-Jahre), Helfgott-AMS-Band 203 (Druck ungeklärt, arXiv bleibt kanonisch), Ramaré–Saouter JNT 98 (2003) 10–33 und ihre Rolle in der 8,37·10²⁶-Kette, behauptete Beweise 2024–2026: keiner anerkannt (KI-Claims nur „Goldbach-artig").
