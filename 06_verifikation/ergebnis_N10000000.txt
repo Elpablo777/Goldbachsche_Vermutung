@@ -1,0 +1,17 @@
+BINÄRE GOLDBACH-VERIFIKATION (endlich)
+Intervall: alle geraden n mit 4 <= n <= 10000000
+Methode: lineares Sieb des Eratosthenes bis 10000000, dann für jedes n
+         kleinstes p <= n/2 mit n-p prim (exakte Integer-Arithmetik).
+Anzahl geprüfter gerader n: 4999999
+Anzahl Fehlschläge: 0
+Erster Fehlschlag: None
+Größtes benötigtes kleinstes Summandenprimzahl p(n) im Intervall: 751
+Anzahl Primzahlen <= 10000000: 664579
+Laufzeit_s: 7.737582
+Python: 3.14.8
+
+BEWEISSTATUS DIESES LAUFS:
+  Wenn Fehlschläge=0, gilt: die Aussage ist wahr für alle geraden n in [4,N].
+  Daraus folgt NICHT die Aussage für alle geraden n >= 4.
+
+KEINE Gegenbeispiele im Intervall.

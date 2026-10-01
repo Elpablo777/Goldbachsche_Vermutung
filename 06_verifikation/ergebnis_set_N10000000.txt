@@ -1,0 +1,11 @@
+BINÄRE GOLDBACH-VERIFIKATION METHODE B (set-membership)
+Intervall: 4 <= n <= 10000000, n gerade
+Methode: Primzahlmenge; Existenz p <= n/2 mit (n-p) in der Menge.
+Geprüft: 4999999
+Fehlschläge: 0
+Erster Fehlschlag: None
+Max. minimales p: 751
+Laufzeit_s: 4.047195
+Python: 3.14.8
+
+BEWEISSTATUS: nur endlich; nicht G_bin für alle n.
