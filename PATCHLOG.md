@@ -1,5 +1,11 @@
 # Patchlog
 
+## 2026-10-01 — Archiv v5: Literatur-Update abgeschlossen
+
+- Neu: `02_literatur/UPDATE_2026-10.md` (nach Ausfall des Hintergrundagenten direkt recherchiert): sweet.ua.pt erneut geöffnet (Double-Check bis 4·10^17, ~781,8 CPU-Jahre), Helfgott-AMS-Band 203 (Druck ungeklärt, arXiv bleibt kanonisch), Ramaré–Saouter JNT 98 (2003) 10–33 und ihre Rolle in der 8,37·10²⁶-Kette, behauptete Beweise 2024–2026: keiner anerkannt (KI-Claims nur „Goldbach-artig").
+- Aktualisiert: `02_literatur/QUELLEN.md` (Update-Verweise), `00_laborjournal/JOURNAL.md`.
+- Inhaltlich: G_bin bleibt **offen**; keine Statusänderung.
+
 ## 2026-10-01 — Archiv v4: 10^9-Verifikation (CI + volle Gegenprüfung), Sätze 5–7, Literatur/KI-Update
 
 - Neu: Methode C `06_verifikation/goldbach_check_np.py` (NumPy, vektorisiert); Lauf 10^7: 0 Fehlschläge, max min-p 751.

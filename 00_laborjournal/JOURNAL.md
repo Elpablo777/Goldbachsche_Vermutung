@@ -179,3 +179,30 @@ Andere Agenten dürfen Einträge nur **anhängen**, nicht stumm überschreiben.
 **Nächster Schritt**
 
 - Push v4; Agent-1-Ergebnis einarbeiten; optional primesieve-Triangulation. G_bin bleibt **offen**.
+
+---
+
+## 2026-10-01 — Abschluss der Recherche-Phase: Literatur-Update direkt erarbeitet (v5)
+
+**Anlass.** Hintergrundagent 1 (Literatur-Update) ist nach >2 h ohne Ergebnis inaktiv gegangen (kein Completion-Event, keine Datei). Erkenntnis protokolliert: für eng umrissene Rechercheaufträge war der direkte Weg in dieser Umgebung zuverlässiger als der lange laufende Hintergrundagent (Agent 2 lief dagegen erfolgreich durch — der Unterschied war vermutlich der weitere, vage umrissene Auftrag von Agent 1).
+
+**Recherche (durchgeführt von der Verwalter-Sitzung)**
+
+- https://sweet.ua.pt/tos/goldbach.html **geöffnet**: Verifikation bis 4·10^18 (April 2012), **Double-Check bis 4·10^17** (581 701 Intervalle à 10^12), minimale-Partition-Methode, segmentiertes Sieb + Assembly, ~781,8 Single-CPU-Jahre, 48 min pro 10^12-Intervall nahe 10^18 (3,3-GHz-Kern).
+- Helfgott-Buchstatus (Suchtreffer, Sekundär): *Annals of Mathematics Studies* Band 203 kursiert; physische Publikation nicht eindeutig bestätigt → arXiv-Fassungen bleiben kanonisch.
+- Ramaré–Saouter: J. Number Theory 98 (2003), 10–33 (Suchtreffer, ScienceDirect + Autoren-PDF); Rolle: explizite kurze Primzahl-Intervalle; Baustein der 8,37·10²⁶-Schranke für ungerade Goldbach (laut OHP14-Abstract). Die im Suchtreffer kursierende Zahl „1,13·10²² ≈ e^28" wurde **bewusst nicht** als kanonisch übernommen (Kontext offensichtlich verkürzt; Blattlektüre offen).
+- Behauptete Beweise 2024–2026 (Suchtreffer): **keiner** anerkannt; Wikipedia/Status unverändert; Amateuransätze (Reddit, Studentensymposium mit Bertrand-Ansatz); MathWorld: Pogorzelski 1977 „not generally accepted"; ein KI-Claim betrifft nur eine **Goldbach-artige** Liouville-Funktions-Vermutung — Verwechslungsmuster dokumentiert.
+
+**Ergebnis**
+
+- `02_literatur/UPDATE_2026-10.md` geschrieben (mit ehrlicher Kennzeichnung „geöffnet" vs. „Suchtreffer"), `QUELLEN.md`-Verweise aktualisiert.
+- Damit sind ALLE Auftragspunkte der Recherche abgedeckt: Rekord (4·10^18, belegt), Helfgott-Status, Ramaré–Saouter, KI-/LLM-Stand (kein Ansatz auf G_bin), kostenlose Rechenleistung (GitHub Actions real genutzt), alte Schranken (Pintz δ=0,28 usw.).
+
+**Verworfene Alternativen (Warum)**
+
+- Neuen Hintergrundagenten für die Restrecherche starten: nach dem Ausfall zuverlässiger, direkt zu recherchieren (4 Web-Zugriffe); Agenten bleiben für parallelisierbare Blöcke nützlich, nicht für kurze sequenzielle Nachfragen.
+- Die Zahl e^28-adjazent als Schranke zitieren: nicht verifiziert, Kontext im Suchtreffer verzerrt — bewusst weggelassen.
+
+**Nächster Schritt**
+
+- Commit+Push v5. Projektphase „Verifikation + Beweisteile + Recherche" ist abgeschlossen; Entscheidung über Weiterlauf (z. B. N > 10^9 via CI-Matrix, M–V-Blattlektüre) beim Nutzer. G_bin bleibt **offen** — kein Beweis, kein Scheinbeweis.

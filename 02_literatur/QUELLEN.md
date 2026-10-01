@@ -5,7 +5,7 @@ Zitierregel: Nur Quellen, die in dieser Sitzung per Suche/Fetch getroffen oder k
 
 **Update-Dateien (2026-10-01, primärquellengeprüft):**
 - `02_literatur/KI_FORMAL_RECHENLEISTUNG_2026-10.md` — KI/LLM-Stand (G_bin nicht angegangen), Lean-4-Formalisierung der ternären Vermutung, GitHub-Actions-Limits, primesieve, Pintz δ=0,28, Chen v6 „to appear IJNT”.
-- `02_literatur/UPDATE_2026-10.md` — Literatur-Update (in Arbeit; wird nach Fertigstellung hier vermerkt).
+- `02_literatur/UPDATE_2026-10.md` — Verifikationsrekord-Details (Double-Check bis 4·10^17, 781,8 CPU-Jahre), Helfgott-Bandstatus (AMS 203, Druck ungeklärt), Ramaré–Saouter-Rolle (JNT 98 (2003)), behauptete Beweise 2024–2026: keiner anerkannt.
 
 ## A. Primärquellen zur binären Verifikation
 
