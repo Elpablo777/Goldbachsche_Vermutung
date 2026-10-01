@@ -1,0 +1,77 @@
+# Goldbach-Verifikation auf kostenlosen GitHub-Actions-Runnern (public repo).
+# Führt Methode D (Go) aus: Selbsttest bei N=200000 (erwartet max min-p = 383),
+# dann großer Lauf (Default N=1e9). Witness-Datei wird als Artefakt hochgeladen,
+# die kleine Ergebnisdatei wird automatisch ins Repo committet.
+name: goldbach-verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      N:
+        description: 'Gerade Obergrenze N (Default 1000000000)'
+        required: false
+        default: '1000000000'
+  push:
+    branches: [main]
+    paths:
+      - '06_verifikation/go/**'
+      - '.github/workflows/goldbach.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+
+      - name: Build
+        run: cd 06_verifikation/go && go build -o goldbach_check .
+
+      - name: Selbsttest N=200000 (erwartet 0 Fehlschlaege, max min-p 383)
+        run: |
+          cd 06_verifikation/go
+          out=$(./goldbach_check -N 200000)
+          echo "$out"
+          echo "$out" | grep -F "Anzahl Fehlschläge: 0"
+          echo "$out" | grep -F "Größtes minimales p(n): 383"
+
+      - name: Grosser Lauf
+        run: |
+          cd 06_verifikation/go
+          N=${{ github.event.inputs.N || '1000000000' }}
+          ./goldbach_check -N "$N" -witness "witness_N${N}.bin" -out "ergebnis_go_N${N}.txt"
+          cat "ergebnis_go_N${N}.txt"
+
+      - name: Pruefsummen
+        run: |
+          cd 06_verifikation/go
+          N=${{ github.event.inputs.N || '1000000000' }}
+          sha256sum "witness_N${N}.bin" "ergebnis_go_N${N}.txt" | tee "sha256_N${N}.txt"
+
+      - name: Artefakte hochladen (90 Tage)
+        uses: actions/upload-artifact@v4
+        with:
+          name: goldbach-N-${{ github.event.inputs.N || '1000000000' }}
+          path: |
+            06_verifikation/go/ergebnis_go_N*.txt
+            06_verifikation/go/witness_N*.bin
+            06_verifikation/go/sha256_N*.txt
+          retention-days: 90
+
+      - name: Ergebnis ins Repo committen
+        run: |
+          N=${{ github.event.inputs.N || '1000000000' }}
+          cp "06_verifikation/go/ergebnis_go_N${N}.txt" 06_verifikation/
+          cp "06_verifikation/go/sha256_N${N}.txt" 06_verifikation/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "06_verifikation/ergebnis_go_N${N}.txt" "06_verifikation/sha256_N${N}.txt"
+          git commit -m "CI: Goldbach-Verifikation N=${N} (GitHub Actions, ubuntu-latest)" || echo "nichts zu committen"
+          git push
